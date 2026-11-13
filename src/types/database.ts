@@ -88,6 +88,7 @@ export type Database = {
           id: string
           pin: string
           question_deadline_at: string | null
+          question_revealed_at: string | null
           question_started_at: string | null
           started_at: string | null
           status: string
@@ -102,6 +103,7 @@ export type Database = {
           id?: string
           pin: string
           question_deadline_at?: string | null
+          question_revealed_at?: string | null
           question_started_at?: string | null
           started_at?: string | null
           status?: string
@@ -116,6 +118,7 @@ export type Database = {
           id?: string
           pin?: string
           question_deadline_at?: string | null
+          question_revealed_at?: string | null
           question_started_at?: string | null
           started_at?: string | null
           status?: string
@@ -361,6 +364,59 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _enforce_question_deadline: {
+        Args: { p_session_id: string }
+        Returns: undefined
+      }
+      advance_question: {
+        Args: { p_session_id: string }
+        Returns: {
+          answers_locked_at: string | null
+          created_at: string
+          current_question_id: string | null
+          ended_at: string | null
+          game_id: string
+          host_id: string
+          id: string
+          pin: string
+          question_deadline_at: string | null
+          question_revealed_at: string | null
+          question_started_at: string | null
+          started_at: string | null
+          status: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "game_sessions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      end_session: {
+        Args: { p_session_id: string }
+        Returns: {
+          answers_locked_at: string | null
+          created_at: string
+          current_question_id: string | null
+          ended_at: string | null
+          game_id: string
+          host_id: string
+          id: string
+          pin: string
+          question_deadline_at: string | null
+          question_revealed_at: string | null
+          question_started_at: string | null
+          started_at: string | null
+          status: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "game_sessions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      get_current_question: { Args: { p_session_id: string }; Returns: Json }
       is_session_host: { Args: { p_session_id: string }; Returns: boolean }
       is_session_participant: {
         Args: { p_session_id: string }
@@ -385,6 +441,130 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      lock_answers: {
+        Args: { p_session_id: string }
+        Returns: {
+          answers_locked_at: string | null
+          created_at: string
+          current_question_id: string | null
+          ended_at: string | null
+          game_id: string
+          host_id: string
+          id: string
+          pin: string
+          question_deadline_at: string | null
+          question_revealed_at: string | null
+          question_started_at: string | null
+          started_at: string | null
+          status: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "game_sessions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      pause_session: {
+        Args: { p_session_id: string }
+        Returns: {
+          answers_locked_at: string | null
+          created_at: string
+          current_question_id: string | null
+          ended_at: string | null
+          game_id: string
+          host_id: string
+          id: string
+          pin: string
+          question_deadline_at: string | null
+          question_revealed_at: string | null
+          question_started_at: string | null
+          started_at: string | null
+          status: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "game_sessions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      resume_session: {
+        Args: { p_session_id: string }
+        Returns: {
+          answers_locked_at: string | null
+          created_at: string
+          current_question_id: string | null
+          ended_at: string | null
+          game_id: string
+          host_id: string
+          id: string
+          pin: string
+          question_deadline_at: string | null
+          question_revealed_at: string | null
+          question_started_at: string | null
+          started_at: string | null
+          status: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "game_sessions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      reveal_answer: {
+        Args: { p_session_id: string }
+        Returns: {
+          answers_locked_at: string | null
+          created_at: string
+          current_question_id: string | null
+          ended_at: string | null
+          game_id: string
+          host_id: string
+          id: string
+          pin: string
+          question_deadline_at: string | null
+          question_revealed_at: string | null
+          question_started_at: string | null
+          started_at: string | null
+          status: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "game_sessions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      start_session: {
+        Args: { p_session_id: string }
+        Returns: {
+          answers_locked_at: string | null
+          created_at: string
+          current_question_id: string | null
+          ended_at: string | null
+          game_id: string
+          host_id: string
+          id: string
+          pin: string
+          question_deadline_at: string | null
+          question_revealed_at: string | null
+          question_started_at: string | null
+          started_at: string | null
+          status: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "game_sessions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      submit_answer: {
+        Args: { p_answer_id: string; p_session_id: string }
+        Returns: Json
       }
     }
     Enums: {
