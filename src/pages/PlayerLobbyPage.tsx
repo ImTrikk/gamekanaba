@@ -1,10 +1,19 @@
+import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router'
+import { useCurrentQuestion } from '@/features/gameplay/hooks/useGameplay'
 import { useMyParticipant } from '@/features/sessions/hooks/useParticipants'
 
 export function PlayerLobbyPage() {
   const { sessionId } = useParams<{ sessionId: string }>()
   const navigate = useNavigate()
   const { data: participant, isLoading, error } = useMyParticipant(sessionId)
+  const { data: question } = useCurrentQuestion(participant ? sessionId : undefined)
+
+  useEffect(() => {
+    if (question && question.sessionStatus !== 'lobby') {
+      navigate(`/play/${sessionId}`, { replace: true })
+    }
+  }, [question, sessionId, navigate])
 
   if (isLoading) return <p className="p-8 text-muted-foreground">Loading…</p>
   if (error) return <p className="p-8 text-destructive">{error.message}</p>
