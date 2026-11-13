@@ -417,6 +417,16 @@ export type Database = {
         }
       }
       get_current_question: { Args: { p_session_id: string }; Returns: Json }
+      get_leaderboard: {
+        Args: { p_session_id: string }
+        Returns: {
+          correct_answers: number
+          display_name: string
+          participant_id: string
+          rank: number
+          total_score: number
+        }[]
+      }
       is_session_host: { Args: { p_session_id: string }; Returns: boolean }
       is_session_participant: {
         Args: { p_session_id: string }
