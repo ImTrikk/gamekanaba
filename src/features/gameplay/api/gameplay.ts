@@ -18,6 +18,7 @@ export interface CurrentQuestion {
   deadlineAt?: string | null
   isLocked?: boolean
   isRevealed?: boolean
+  showLeaderboardAfterQuestion: boolean
   answers?: CurrentQuestionAnswer[]
 }
 
@@ -26,7 +27,7 @@ export async function getCurrentQuestion(sessionId: string): Promise<CurrentQues
     p_session_id: sessionId,
   })
   if (error) throw error
-  return data as CurrentQuestion
+  return data as unknown as CurrentQuestion
 }
 
 export async function submitAnswer(sessionId: string, answerId: string): Promise<void> {
@@ -37,7 +38,16 @@ export async function submitAnswer(sessionId: string, answerId: string): Promise
   if (error) throw error
 }
 
-async function callSessionControl(fn: string, sessionId: string): Promise<void> {
+type SessionControlFn =
+  | 'start_session'
+  | 'lock_answers'
+  | 'reveal_answer'
+  | 'advance_question'
+  | 'pause_session'
+  | 'resume_session'
+  | 'end_session'
+
+async function callSessionControl(fn: SessionControlFn, sessionId: string): Promise<void> {
   const { error } = await supabase.rpc(fn, { p_session_id: sessionId })
   if (error) throw error
 }

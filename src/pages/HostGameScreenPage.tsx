@@ -1,6 +1,8 @@
+import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { useCountdown } from '@/features/gameplay/hooks/useCountdown'
 import { useAnswerProgress, useCurrentQuestion, useHostControls } from '@/features/gameplay/hooks/useGameplay'
+import { LeaderboardList } from '@/features/leaderboard/components/LeaderboardList'
 import { useParticipants } from '@/features/sessions/hooks/useParticipants'
 import { Button } from '@/components/ui/button'
 
@@ -14,20 +16,15 @@ export function HostGameScreenPage() {
 
   const secondsLeft = useCountdown(question?.deadlineAt)
 
+  useEffect(() => {
+    if (question?.sessionStatus === 'completed') {
+      navigate(`/sessions/${sessionId}/results`, { replace: true })
+    }
+  }, [question?.sessionStatus, sessionId, navigate])
+
   if (isLoading) return <p className="p-8 text-muted-foreground">Loading…</p>
   if (error) return <p className="p-8 text-destructive">{error.message}</p>
-  if (!question) return null
-
-  if (question.sessionStatus === 'completed') {
-    return (
-      <div className="mx-auto max-w-2xl py-16 text-center">
-        <h1 className="text-2xl font-medium">Session complete</h1>
-        <Button className="mt-6" onClick={() => navigate('/host/dashboard')}>
-          Back to dashboard
-        </Button>
-      </div>
-    )
-  }
+  if (!question || question.sessionStatus === 'completed') return null
 
   if (!question.questionId) {
     return (
@@ -69,6 +66,13 @@ export function HostGameScreenPage() {
       <p className="mb-6 text-sm text-muted-foreground">
         {answerCount ?? 0} of {participants?.length ?? 0} answered
       </p>
+
+      {question.isRevealed && question.showLeaderboardAfterQuestion && sessionId && (
+        <div className="mb-6">
+          <h2 className="mb-3 text-lg font-medium">Leaderboard</h2>
+          <LeaderboardList sessionId={sessionId} />
+        </div>
+      )}
 
       <div className="flex flex-wrap gap-2">
         {question.sessionStatus === 'in_progress' && !question.isLocked && (

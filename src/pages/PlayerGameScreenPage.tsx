@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import type { CurrentQuestion } from '@/features/gameplay/api/gameplay'
 import { useCountdown } from '@/features/gameplay/hooks/useCountdown'
 import { useCurrentQuestion, useSubmitAnswer } from '@/features/gameplay/hooks/useGameplay'
-import { Button } from '@/components/ui/button'
+import { LeaderboardList } from '@/features/leaderboard/components/LeaderboardList'
 
 function ActiveQuestion({
   sessionId,
@@ -63,6 +63,13 @@ function ActiveQuestion({
           Answers are locked. Waiting for reveal…
         </p>
       )}
+
+      {question.isRevealed && question.showLeaderboardAfterQuestion && (
+        <div className="mt-6">
+          <h2 className="mb-3 text-lg font-medium">Leaderboard</h2>
+          <LeaderboardList sessionId={sessionId} />
+        </div>
+      )}
     </div>
   )
 }
@@ -72,20 +79,15 @@ export function PlayerGameScreenPage() {
   const navigate = useNavigate()
   const { data: question, isLoading, error } = useCurrentQuestion(sessionId)
 
+  useEffect(() => {
+    if (question?.sessionStatus === 'completed') {
+      navigate(`/sessions/${sessionId}/results`, { replace: true })
+    }
+  }, [question?.sessionStatus, sessionId, navigate])
+
   if (isLoading) return <p className="p-8 text-muted-foreground">Loading…</p>
   if (error) return <p className="p-8 text-destructive">{error.message}</p>
-  if (!question) return null
-
-  if (question.sessionStatus === 'completed') {
-    return (
-      <div className="mx-auto max-w-sm py-16 text-center">
-        <h1 className="text-2xl font-medium">Game over!</h1>
-        <Button className="mt-6" onClick={() => navigate('/')}>
-          Done
-        </Button>
-      </div>
-    )
-  }
+  if (!question || question.sessionStatus === 'completed') return null
 
   if (question.sessionStatus === 'paused') {
     return <p className="p-8 text-center text-muted-foreground">Game paused…</p>
