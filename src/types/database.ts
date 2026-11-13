@@ -361,6 +361,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      is_session_host: { Args: { p_session_id: string }; Returns: boolean }
+      is_session_participant: {
+        Args: { p_session_id: string }
+        Returns: boolean
+      }
       join_session: {
         Args: { p_display_name: string; p_full_name: string; p_pin: string }
         Returns: {
