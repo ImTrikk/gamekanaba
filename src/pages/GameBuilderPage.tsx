@@ -5,6 +5,7 @@ import { QuestionList } from '@/features/questions/components/QuestionList'
 import type { Game } from '@/features/games/api/games'
 import { useUpdateGameDetails } from '@/features/games/hooks/useGameMutations'
 import { useGame } from '@/features/games/hooks/useGames'
+import { useCreateSession } from '@/features/sessions/hooks/useSessions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -56,6 +57,7 @@ export function GameBuilderPage() {
   const { gameId } = useParams<{ gameId: string }>()
   const navigate = useNavigate()
   const { data: game, isLoading, error } = useGame(gameId)
+  const createSession = useCreateSession()
 
   if (isLoading) return <p className="p-8 text-muted-foreground">Loading game…</p>
   if (error) return <p className="p-8 text-destructive">{error.message}</p>
@@ -65,10 +67,25 @@ export function GameBuilderPage() {
     <div className="mx-auto max-w-2xl py-12">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-medium">Edit game</h1>
-        <Button variant="outline" onClick={() => navigate(`/host/games/${gameId}/settings`)}>
-          Settings
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => navigate(`/host/games/${gameId}/settings`)}>
+            Settings
+          </Button>
+          <Button
+            disabled={createSession.isPending}
+            onClick={() =>
+              createSession.mutate(gameId!, {
+                onSuccess: (session) => navigate(`/host/sessions/${session.id}/lobby`),
+              })
+            }
+          >
+            Start session
+          </Button>
+        </div>
       </div>
+      {createSession.isError && (
+        <p className="mb-4 text-sm text-destructive">{createSession.error.message}</p>
+      )}
 
       <GameDetailsForm key={game.id} game={game} />
 
