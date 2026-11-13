@@ -361,7 +361,26 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      join_session: {
+        Args: { p_display_name: string; p_full_name: string; p_pin: string }
+        Returns: {
+          display_name: string
+          full_name: string
+          id: string
+          is_connected: boolean
+          joined_at: string
+          last_seen_at: string
+          session_id: string
+          total_score: number
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "participants"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
       [_ in never]: never
