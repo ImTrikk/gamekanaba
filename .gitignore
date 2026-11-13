@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 
+graphify-out/
+
 # Environment variables
 .env
 .env.*
