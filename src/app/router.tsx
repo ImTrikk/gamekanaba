@@ -1,4 +1,5 @@
 import { createBrowserRouter } from 'react-router'
+import { ProtectedHostRoute } from '@/features/auth/components/ProtectedHostRoute'
 import { FinalResultsPage } from '@/pages/FinalResultsPage'
 import { GameBuilderPage } from '@/pages/GameBuilderPage'
 import { GameSettingsPage } from '@/pages/GameSettingsPage'
@@ -18,11 +19,16 @@ export const router = createBrowserRouter([
   { path: '/join', element: <JoinGamePage /> },
   { path: '/join/register', element: <GuestRegistrationPage /> },
   { path: '/host/sign-in', element: <HostSignInPage /> },
-  { path: '/host/dashboard', element: <HostDashboardPage /> },
-  { path: '/host/games/:gameId/edit', element: <GameBuilderPage /> },
-  { path: '/host/games/:gameId/settings', element: <GameSettingsPage /> },
-  { path: '/host/sessions/:sessionId/lobby', element: <HostLobbyPage /> },
-  { path: '/host/sessions/:sessionId/play', element: <HostGameScreenPage /> },
+  {
+    element: <ProtectedHostRoute />,
+    children: [
+      { path: '/host/dashboard', element: <HostDashboardPage /> },
+      { path: '/host/games/:gameId/edit', element: <GameBuilderPage /> },
+      { path: '/host/games/:gameId/settings', element: <GameSettingsPage /> },
+      { path: '/host/sessions/:sessionId/lobby', element: <HostLobbyPage /> },
+      { path: '/host/sessions/:sessionId/play', element: <HostGameScreenPage /> },
+    ],
+  },
   { path: '/play/:sessionId/lobby', element: <PlayerLobbyPage /> },
   { path: '/play/:sessionId', element: <PlayerGameScreenPage /> },
   { path: '/sessions/:sessionId/leaderboard', element: <LeaderboardPage /> },
