@@ -1,4 +1,3 @@
-
 # CLAUDE.md
 
 # GameKanaBa? — Claude Code Instructions
@@ -24,3 +23,18 @@ Before performing development work, read the following project documentation:
 If project requirements or architecture are unclear, ask before making significant assumptions.
 
 **Primary objective:** Build GameKanaBa? incrementally with clean architecture, reliable real-time functionality, secure Supabase integration, and maintainable Git history.
+
+
+## Design Guidelines
+
+Before implementing frontend features, read `DESIGN_GUIDELINES.md`.
+
+Follow the established design system, visual direction, responsive
+design requirements, accessibility standards, and component conventions.
+
+Do not create generic interfaces or introduce arbitrary design patterns.
+
+For major screens, establish the layout and component structure before
+implementing the full interface.
+
+Maintain visual consistency across host, player, and gameplay experiences.
