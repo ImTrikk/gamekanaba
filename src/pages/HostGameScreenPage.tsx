@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router'
+import { CountdownDisplay } from '@/features/gameplay/components/CountdownDisplay'
 import { useCountdown } from '@/features/gameplay/hooks/useCountdown'
 import { useAnswerProgress, useCurrentQuestion, useHostControls } from '@/features/gameplay/hooks/useGameplay'
 import { LeaderboardList } from '@/features/leaderboard/components/LeaderboardList'
@@ -14,7 +15,7 @@ export function HostGameScreenPage() {
   const { data: answerCount } = useAnswerProgress(sessionId, question?.questionId ?? undefined)
   const controls = useHostControls(sessionId ?? '')
 
-  const secondsLeft = useCountdown(question?.deadlineAt)
+  const { secondsLeft, urgency } = useCountdown(question?.deadlineAt)
 
   useEffect(() => {
     if (question?.sessionStatus === 'completed') {
@@ -45,7 +46,7 @@ export function HostGameScreenPage() {
     <div className="mx-auto max-w-2xl py-12">
       <div className="mb-6 flex items-center justify-between">
         <span className="text-sm text-muted-foreground uppercase">{question.sessionStatus}</span>
-        <span className="text-2xl font-semibold">{secondsLeft ?? '—'}s</span>
+        <CountdownDisplay secondsLeft={secondsLeft} urgency={urgency} />
       </div>
 
       <h1 className="mb-6 text-2xl font-medium">{question.questionText}</h1>
@@ -55,7 +56,7 @@ export function HostGameScreenPage() {
           <li
             key={answer.id}
             className={`rounded-md border p-3 ${
-              question.isRevealed && answer.isCorrect ? 'border-green-500 bg-green-50' : ''
+              question.isRevealed && answer.isCorrect ? 'border-success bg-success/10' : ''
             }`}
           >
             {answer.answerText}

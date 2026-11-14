@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import type { CurrentQuestion } from '@/features/gameplay/api/gameplay'
+import { CountdownDisplay } from '@/features/gameplay/components/CountdownDisplay'
 import { useCountdown } from '@/features/gameplay/hooks/useCountdown'
 import { useCurrentQuestion, useSubmitAnswer } from '@/features/gameplay/hooks/useGameplay'
 import { LeaderboardList } from '@/features/leaderboard/components/LeaderboardList'
@@ -14,7 +15,7 @@ function ActiveQuestion({
 }) {
   const submitAnswer = useSubmitAnswer(sessionId)
   const [selectedAnswerId, setSelectedAnswerId] = useState<string | null>(null)
-  const secondsLeft = useCountdown(question.deadlineAt)
+  const { secondsLeft, urgency } = useCountdown(question.deadlineAt)
 
   const hasSubmitted = selectedAnswerId !== null && submitAnswer.isSuccess
 
@@ -24,7 +25,7 @@ function ActiveQuestion({
         <span className="text-sm text-muted-foreground uppercase">
           {question.isRevealed ? 'Revealed' : question.isLocked ? 'Locked' : 'Answer now'}
         </span>
-        <span className="text-xl font-semibold">{secondsLeft ?? '—'}s</span>
+        <CountdownDisplay secondsLeft={secondsLeft} urgency={urgency} />
       </div>
 
       <h1 className="mb-6 text-xl font-medium">{question.questionText}</h1>
@@ -44,7 +45,7 @@ function ActiveQuestion({
               }}
               className={`rounded-md border p-4 text-left text-lg disabled:opacity-60 ${
                 isSelected ? 'border-primary ring-2 ring-primary' : ''
-              } ${showCorrectness && answer.isCorrect ? 'border-green-500 bg-green-50' : ''}`}
+              } ${showCorrectness && answer.isCorrect ? 'border-success bg-success/10' : ''}`}
             >
               {answer.answerText}
             </button>
