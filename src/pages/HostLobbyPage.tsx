@@ -3,7 +3,19 @@ import { useHostControls } from '@/features/gameplay/hooks/useGameplay'
 import { SessionQrCode } from '@/features/sessions/components/SessionQrCode'
 import { useRemoveParticipant, useParticipants } from '@/features/sessions/hooks/useParticipants'
 import { useGameSession } from '@/features/sessions/hooks/useSessions'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 
 export function HostLobbyPage() {
   const { sessionId } = useParams<{ sessionId: string }>()
@@ -41,11 +53,11 @@ export function HostLobbyPage() {
         <p className="mb-4 text-sm text-destructive">{controls.start.error.message}</p>
       )}
 
-      <div className="mb-8 flex flex-col items-center gap-4 rounded-md border p-6">
+      <Card className="mb-8 flex-col items-center gap-4 p-6">
         <p className="text-sm text-muted-foreground">Game PIN</p>
         <p className="text-5xl font-semibold tracking-widest">{session.pin}</p>
         <SessionQrCode pin={session.pin} />
-      </div>
+      </Card>
 
       <h2 className="mb-3 text-lg font-medium">
         Participants ({participants?.length ?? 0})
@@ -53,24 +65,36 @@ export function HostLobbyPage() {
       {participants && participants.length === 0 && (
         <p className="text-muted-foreground">Waiting for players to join…</p>
       )}
-      <ul className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2">
         {participants?.map((participant) => (
-          <li
-            key={participant.id}
-            className="flex items-center justify-between rounded-md border p-3"
-          >
+          <Card key={participant.id} className="flex-row items-center justify-between p-3">
             <span>{participant.displayName}</span>
-            <Button
-              variant="ghost"
-              size="sm"
-              disabled={removeParticipant.isPending}
-              onClick={() => removeParticipant.mutate(participant.id)}
-            >
-              Remove
-            </Button>
-          </li>
+            <AlertDialog>
+              <AlertDialogTrigger
+                render={
+                  <Button variant="ghost" size="sm" disabled={removeParticipant.isPending}>
+                    Remove
+                  </Button>
+                }
+              />
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Remove {participant.displayName}?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    They'll be removed from this session and can rejoin with the PIN if needed.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => removeParticipant.mutate(participant.id)}>
+                    Remove
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </Card>
         ))}
-      </ul>
+      </div>
     </div>
   )
 }
