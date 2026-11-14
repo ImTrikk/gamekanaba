@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { useHostControls } from '@/features/gameplay/hooks/useGameplay'
 import { SessionQrCode } from '@/features/sessions/components/SessionQrCode'
@@ -14,14 +15,47 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { cn } from 'cn'
+
+// Highlights rows for participants who weren't in the previous render's list
+// — i.e. just joined — without animating the initial batch the host sees on
+// first load. Presentational only; the authoritative count/list is unaffected
+// (docs/design/MECHVIBES_DESIGN_DIRECTION.md §4.1).
+function useArrivedParticipantIds(participants: { id: string }[] | undefined) {
+  const prevIdsRef = useRef<Set<string> | null>(null)
+  const [arrivedIds, setArrivedIds] = useState<Set<string>>(new Set())
+
+  useEffect(() => {
+    if (!participants) return
+
+    const prevIds = prevIdsRef.current
+    const nextIds = new Set(participants.map((p) => p.id))
+    const arrived = new Set<string>()
+    if (prevIds) {
+      for (const id of nextIds) {
+        if (!prevIds.has(id)) arrived.add(id)
+      }
+    }
+    prevIdsRef.current = nextIds
+
+    if (arrived.size === 0) return
+    setArrivedIds(arrived)
+    const timeout = setTimeout(() => setArrivedIds(new Set()), 1500)
+    return () => clearTimeout(timeout)
+  }, [participants])
+
+  return arrivedIds
+}
 
 export function HostLobbyPage() {
   const { sessionId } = useParams<{ sessionId: string }>()
   const navigate = useNavigate()
   const { data: session, isLoading, error } = useGameSession(sessionId)
   const { data: participants } = useParticipants(sessionId)
+  const arrivedIds = useArrivedParticipantIds(participants)
   const removeParticipant = useRemoveParticipant(sessionId ?? '')
   const controls = useHostControls(sessionId ?? '')
 
@@ -66,9 +100,21 @@ export function HostLobbyPage() {
         <p className="text-muted-foreground">Waiting for players to join…</p>
       )}
       <div className="flex flex-col gap-2">
-        {participants?.map((participant) => (
-          <Card key={participant.id} className="flex-row items-center justify-between p-3">
-            <span>{participant.displayName}</span>
+        {participants?.map((participant) => {
+          const justArrived = arrivedIds.has(participant.id)
+          return (
+          <Card
+            key={participant.id}
+            className={cn(
+              'flex-row items-center justify-between p-3 transition-colors motion-safe:duration-300',
+              justArrived &&
+                'border-success bg-success/10 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-1',
+            )}
+          >
+            <span className="flex items-center gap-2">
+              {participant.displayName}
+              {justArrived && <Badge variant="success">Joined</Badge>}
+            </span>
             <AlertDialog>
               <AlertDialogTrigger
                 render={
@@ -93,7 +139,8 @@ export function HostLobbyPage() {
               </AlertDialogContent>
             </AlertDialog>
           </Card>
-        ))}
+          )
+        })}
       </div>
     </div>
   )
