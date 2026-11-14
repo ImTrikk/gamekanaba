@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import type { CurrentQuestion } from '@/features/gameplay/api/gameplay'
+import { AnswerTile, type AnswerTileState } from '@/features/gameplay/components/AnswerTile'
 import { CountdownDisplay } from '@/features/gameplay/components/CountdownDisplay'
 import { useCountdown } from '@/features/gameplay/hooks/useCountdown'
 import { useCurrentQuestion, useSubmitAnswer } from '@/features/gameplay/hooks/useGameplay'
@@ -33,22 +34,33 @@ function ActiveQuestion({
       <div className="flex flex-col gap-3">
         {question.answers?.map((answer) => {
           const isSelected = selectedAnswerId === answer.id
-          const showCorrectness = question.isRevealed
+
+          let tileState: AnswerTileState
+          if (question.isRevealed) {
+            tileState = answer.isCorrect
+              ? 'correct'
+              : isSelected
+                ? 'incorrect-selected'
+                : 'incorrect-other'
+          } else if (isSelected) {
+            tileState = 'selected'
+          } else if (question.isLocked) {
+            tileState = 'locked'
+          } else {
+            tileState = 'default'
+          }
+
           return (
-            <button
+            <AnswerTile
               key={answer.id}
-              type="button"
+              answerText={answer.answerText}
+              state={tileState}
               disabled={question.isLocked || submitAnswer.isPending}
               onClick={() => {
                 setSelectedAnswerId(answer.id)
                 submitAnswer.mutate(answer.id)
               }}
-              className={`rounded-md border p-4 text-left text-gameplay-answer disabled:opacity-60 ${
-                isSelected ? 'border-primary ring-2 ring-primary' : ''
-              } ${showCorrectness && answer.isCorrect ? 'border-success bg-success/10' : ''}`}
-            >
-              {answer.answerText}
-            </button>
+            />
           )
         })}
       </div>
