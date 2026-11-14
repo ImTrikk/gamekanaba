@@ -28,7 +28,7 @@ function ActiveQuestion({
         <CountdownDisplay secondsLeft={secondsLeft} urgency={urgency} />
       </div>
 
-      <h1 className="mb-6 text-xl font-medium">{question.questionText}</h1>
+      <h1 className="mb-6 text-gameplay-question">{question.questionText}</h1>
 
       <div className="flex flex-col gap-3">
         {question.answers?.map((answer) => {
@@ -43,7 +43,7 @@ function ActiveQuestion({
                 setSelectedAnswerId(answer.id)
                 submitAnswer.mutate(answer.id)
               }}
-              className={`rounded-md border p-4 text-left text-lg disabled:opacity-60 ${
+              className={`rounded-md border p-4 text-left text-gameplay-answer disabled:opacity-60 ${
                 isSelected ? 'border-primary ring-2 ring-primary' : ''
               } ${showCorrectness && answer.isCorrect ? 'border-success bg-success/10' : ''}`}
             >

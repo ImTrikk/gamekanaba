@@ -49,13 +49,13 @@ export function HostGameScreenPage() {
         <CountdownDisplay secondsLeft={secondsLeft} urgency={urgency} />
       </div>
 
-      <h1 className="mb-6 text-2xl font-medium">{question.questionText}</h1>
+      <h1 className="mb-6 text-gameplay-question">{question.questionText}</h1>
 
       <ul className="mb-6 flex flex-col gap-2">
         {question.answers?.map((answer) => (
           <li
             key={answer.id}
-            className={`rounded-md border p-3 ${
+            className={`rounded-md border p-3 text-gameplay-answer ${
               question.isRevealed && answer.isCorrect ? 'border-success bg-success/10' : ''
             }`}
           >
