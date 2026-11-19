@@ -24,7 +24,6 @@ If project requirements or architecture are unclear, ask before making significa
 
 **Primary objective:** Build GameKanaBa? incrementally with clean architecture, reliable real-time functionality, secure Supabase integration, and maintainable Git history.
 
-
 ## Design Guidelines
 
 Before implementing frontend features, read `DESIGN_GUIDELINES.md`.
