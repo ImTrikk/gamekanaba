@@ -6,7 +6,19 @@ import {
   useReorderQuestion,
   useUpdateQuestion,
 } from '@/features/questions/hooks/useQuestions'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import {
   Select,
@@ -31,9 +43,9 @@ export function QuestionList({ gameId }: { gameId: string }) {
   }
 
   return (
-    <ul className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3">
       {questions.map((question, index) => (
-        <li key={question.id} className="rounded-md border p-3">
+        <Card key={question.id} className="p-3">
           <div className="flex items-center gap-2">
             <div className="flex flex-col">
               <Button
@@ -112,14 +124,29 @@ export function QuestionList({ gameId }: { gameId: string }) {
               {expandedId === question.id ? 'Hide answers' : 'Answers'}
             </Button>
 
-            <Button
-              variant="ghost"
-              size="sm"
-              disabled={deleteQuestion.isPending}
-              onClick={() => deleteQuestion.mutate(question.id)}
-            >
-              Delete
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger
+                render={
+                  <Button variant="ghost" size="sm" disabled={deleteQuestion.isPending}>
+                    Delete
+                  </Button>
+                }
+              />
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete this question?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This permanently deletes the question and its answers. This can't be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => deleteQuestion.mutate(question.id)}>
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
 
           {expandedId === question.id && (
@@ -127,8 +154,8 @@ export function QuestionList({ gameId }: { gameId: string }) {
               <AnswerEditor questionId={question.id} questionType={question.questionType} />
             </div>
           )}
-        </li>
+        </Card>
       ))}
-    </ul>
+    </div>
   )
 }

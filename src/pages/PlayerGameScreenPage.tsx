@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import type { CurrentQuestion } from '@/features/gameplay/api/gameplay'
+import { AnswerTile, type AnswerTileState } from '@/features/gameplay/components/AnswerTile'
+import { CountdownDisplay } from '@/features/gameplay/components/CountdownDisplay'
 import { useCountdown } from '@/features/gameplay/hooks/useCountdown'
 import { useCurrentQuestion, useSubmitAnswer } from '@/features/gameplay/hooks/useGameplay'
 import { LeaderboardList } from '@/features/leaderboard/components/LeaderboardList'
@@ -14,7 +16,7 @@ function ActiveQuestion({
 }) {
   const submitAnswer = useSubmitAnswer(sessionId)
   const [selectedAnswerId, setSelectedAnswerId] = useState<string | null>(null)
-  const secondsLeft = useCountdown(question.deadlineAt)
+  const { secondsLeft, urgency } = useCountdown(question.deadlineAt)
 
   const hasSubmitted = selectedAnswerId !== null && submitAnswer.isSuccess
 
@@ -24,30 +26,41 @@ function ActiveQuestion({
         <span className="text-sm text-muted-foreground uppercase">
           {question.isRevealed ? 'Revealed' : question.isLocked ? 'Locked' : 'Answer now'}
         </span>
-        <span className="text-xl font-semibold">{secondsLeft ?? '—'}s</span>
+        <CountdownDisplay secondsLeft={secondsLeft} urgency={urgency} />
       </div>
 
-      <h1 className="mb-6 text-xl font-medium">{question.questionText}</h1>
+      <h1 className="mb-6 text-gameplay-question">{question.questionText}</h1>
 
       <div className="flex flex-col gap-3">
         {question.answers?.map((answer) => {
           const isSelected = selectedAnswerId === answer.id
-          const showCorrectness = question.isRevealed
+
+          let tileState: AnswerTileState
+          if (question.isRevealed) {
+            tileState = answer.isCorrect
+              ? 'correct'
+              : isSelected
+                ? 'incorrect-selected'
+                : 'incorrect-other'
+          } else if (isSelected) {
+            tileState = 'selected'
+          } else if (question.isLocked) {
+            tileState = 'locked'
+          } else {
+            tileState = 'default'
+          }
+
           return (
-            <button
+            <AnswerTile
               key={answer.id}
-              type="button"
+              answerText={answer.answerText}
+              state={tileState}
               disabled={question.isLocked || submitAnswer.isPending}
               onClick={() => {
                 setSelectedAnswerId(answer.id)
                 submitAnswer.mutate(answer.id)
               }}
-              className={`rounded-md border p-4 text-left text-lg disabled:opacity-60 ${
-                isSelected ? 'border-primary ring-2 ring-primary' : ''
-              } ${showCorrectness && answer.isCorrect ? 'border-green-500 bg-green-50' : ''}`}
-            >
-              {answer.answerText}
-            </button>
+            />
           )
         })}
       </div>

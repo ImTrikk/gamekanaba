@@ -4,6 +4,8 @@ import type { Game } from '@/features/games/api/games'
 import { useUpdateGameSettings } from '@/features/games/hooks/useGameMutations'
 import { useGame } from '@/features/games/hooks/useGames'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -45,25 +47,25 @@ function GameSettingsForm({ game }: { game: Game }) {
         </Select>
       </div>
 
-      <label className="flex items-center gap-2 text-sm font-medium">
-        <input
-          type="checkbox"
+      <Label htmlFor="shuffle-answers">
+        <Checkbox
+          id="shuffle-answers"
           checked={settings.shuffleAnswers}
-          onChange={(e) => setSettings((s) => ({ ...s, shuffleAnswers: e.target.checked }))}
+          onCheckedChange={(checked) => setSettings((s) => ({ ...s, shuffleAnswers: checked }))}
         />
         Shuffle answer choices
-      </label>
+      </Label>
 
-      <label className="flex items-center gap-2 text-sm font-medium">
-        <input
-          type="checkbox"
+      <Label htmlFor="show-leaderboard">
+        <Checkbox
+          id="show-leaderboard"
           checked={settings.showLeaderboardAfterQuestion}
-          onChange={(e) =>
-            setSettings((s) => ({ ...s, showLeaderboardAfterQuestion: e.target.checked }))
+          onCheckedChange={(checked) =>
+            setSettings((s) => ({ ...s, showLeaderboardAfterQuestion: checked }))
           }
         />
         Show leaderboard after each question
-      </label>
+      </Label>
 
       {updateSettings.isError && (
         <p className="text-sm text-destructive">{updateSettings.error.message}</p>

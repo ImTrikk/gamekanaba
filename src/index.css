@@ -25,6 +25,8 @@
     --color-input: var(--input);
     --color-border: var(--border);
     --color-destructive: var(--destructive);
+    --color-success-foreground: var(--success-foreground);
+    --color-success: var(--success);
     --color-accent-foreground: var(--accent-foreground);
     --color-accent: var(--accent);
     --color-muted-foreground: var(--muted-foreground);
@@ -46,6 +48,26 @@
     --radius-2xl: calc(var(--radius) * 1.8);
     --radius-3xl: calc(var(--radius) * 2.2);
     --radius-4xl: calc(var(--radius) * 2.6);
+
+    /* Gameplay-oriented typography scale (GAME_DESIGN.md / DESIGN_GUIDELINES.md §3 Typography) */
+    --text-display: 2.75rem;
+    --text-display--line-height: 1.1;
+    --text-display--font-weight: 700;
+    --text-heading: 1.5rem;
+    --text-heading--line-height: 1.25;
+    --text-heading--font-weight: 600;
+    --text-gameplay-question: 1.75rem;
+    --text-gameplay-question--line-height: 1.25;
+    --text-gameplay-question--font-weight: 600;
+    --text-gameplay-answer: 1.125rem;
+    --text-gameplay-answer--line-height: 1.3;
+    --text-gameplay-answer--font-weight: 500;
+    --text-countdown: 2.25rem;
+    --text-countdown--line-height: 1;
+    --text-countdown--font-weight: 700;
+    --text-score: 1.875rem;
+    --text-score--line-height: 1.1;
+    --text-score--font-weight: 700;
 }
 
 :root {
@@ -55,15 +77,17 @@
     --card-foreground: oklch(0.145 0 0);
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
+    --primary: oklch(0.56 0.22 295);
     --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.94 0.035 295);
+    --secondary-foreground: oklch(0.32 0.1 295);
     --muted: oklch(0.97 0 0);
     --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
+    --accent: oklch(0.93 0.09 25);
+    --accent-foreground: oklch(0.32 0.14 25);
     --destructive: oklch(0.577 0.245 27.325);
+    --success: oklch(0.62 0.17 145);
+    --success-foreground: oklch(0.985 0 0);
     --border: oklch(0.922 0 0);
     --input: oklch(0.922 0 0);
     --ring: oklch(0.708 0 0);
@@ -90,15 +114,17 @@
     --card-foreground: oklch(0.985 0 0);
     --popover: oklch(0.205 0 0);
     --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.72 0.19 295);
+    --primary-foreground: oklch(0.145 0 0);
+    --secondary: oklch(0.32 0.08 295);
+    --secondary-foreground: oklch(0.92 0.02 295);
     --muted: oklch(0.269 0 0);
     --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
+    --accent: oklch(0.34 0.1 25);
+    --accent-foreground: oklch(0.92 0.05 25);
     --destructive: oklch(0.704 0.191 22.216);
+    --success: oklch(0.7 0.16 145);
+    --success-foreground: oklch(0.145 0 0);
     --border: oklch(1 0 0 / 10%);
     --input: oklch(1 0 0 / 15%);
     --ring: oklch(0.556 0 0);
